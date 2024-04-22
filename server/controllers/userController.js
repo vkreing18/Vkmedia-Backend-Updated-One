@@ -22,15 +22,15 @@ export const verifyEmail = async (req, res) => {
             Users.findOneAndDelete({ _id: userId })
               .then(() => {
                 const message = "Verification token has expired.";
-                res.redirect(`/users/verified?status=error&message=${message}`);
+                res.redirect(`/users/Statuspage/Error/?message=${message}`);
               })
               .catch((err) => {
-                res.redirect(`/users/verified?status=error&message=`);
+                res.redirect(`/users/Statuspage/Error/?message=${"Default"}`);
               });
           })
           .catch((error) => {
             console.log(error);
-            res.redirect(`/users/verified?message=`);
+            res.redirect(`/users/Statuspage/Error/?message=${"Default"}`);
           });
       } else {
         //token valid
@@ -41,36 +41,32 @@ export const verifyEmail = async (req, res) => {
                 .then(() => {
                   Verification.findOneAndDelete({ userId }).then(() => {
                     const message = "Email verified successfully";
-                    res.redirect(
-                      `/users/verified?status=success&message=${message}`
-                    );
+                    res.redirect(`/users/Statuspage/Success/?message=${message}`);
                   });
                 })
                 .catch((err) => {
                   console.log(err);
                   const message = "Verification failed or link is invalid";
-                  res.redirect(
-                    `/users/verified?status=error&message=${message}`
-                  );
+                  res.redirect(`/users/Statuspage/Error/?message=${message}`);
                 });
             } else {
               // invalid token
               const message = "Verification failed or link is invalid";
-              res.redirect(`/users/verified?status=error&message=${message}`);
+              res.redirect(`/users/Statuspage/Error/?message=${message}`);
             }
           })
           .catch((err) => {
             console.log(err);
-            res.redirect(`/users/verified?message=`);
+            res.redirect(`/users/Statuspage/Error/?message=${"Default"}`);
           });
       }
     } else {
       const message = "Invalid verification link. Try again later.";
-      res.redirect(`/users/verified?status=error&message=${message}`);
+      res.redirect(`/users/Statuspage/Error/?message=${message}`);
     }
   } catch (error) {
     console.log(err);
-    res.redirect(`/users/verified?message=`);
+    res.redirect(`/users/Statuspage/Error/?message=${"Default"}`);
   }
 };
 
@@ -148,11 +144,8 @@ export const resetPassword = async (req, res) => {
 
 export const IsPasswordReset = async (req, res)=> {
   const { userId } = req.body;
-  console.log(2,userId)
   try {
     const user = await PasswordReset.findOne({userId});
-    console.log(40,user)
- 
       if(user){
         return res.status(200).json({
           status: "SUCCESS",
@@ -160,7 +153,6 @@ export const IsPasswordReset = async (req, res)=> {
         });
       }
       else {
-        console.log(22,user)
         return res.status(201).json({
           status: "Already reset",
           message: "Invalid password reset link.",
